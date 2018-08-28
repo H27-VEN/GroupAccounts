@@ -4,42 +4,25 @@ import "./AccountList.css";
 export default class AccountList extends Component {
   constructor(props) {
     super(props);
-    // this.initializeState = this.initializeState.bind(this);
-    // this.handleCheckChange = this.handleCheckChange.bind(this);
-    // this.checkGroupAccounts = this.checkGroupAccounts.bind(this);
     this.handleCheck = this.handleCheck.bind(this);
-    // this.state = this.initializeState();
-    // console.log(this.state);
+    this.handleSearch = this.handleSearch.bind(this);
+    this.handleSelectAll = this.handleSelectAll.bind(this);
+    this.state = {search: ''};
   }
 
-  //   initializeState() {
-  //     const checkedAccounts = {};
-  //     for (let i = 0; i < this.props.list.length; i++) {
-  //       checkedAccounts[this.props.list[i].id] = false;
-  //     }
-  //     return { checkedAccounts };
-  //   }
+  handleSearch(event) {
+    const {id, value} = event.target;
+    this.setState({
+      [id]: value
+    }, () => {
+      this.props.handleSearch(value);
+    });
+  }
 
-  //   handleCheckChange(event) {
-  //     const { id, checked } = event.target;
-  //     this.setState(state => {
-  //       const currentState = { ...state };
-  //       currentState.checkedAccounts[id] = checked;
-  //       return currentState;
-  //     });
-  //   }
-
-  //   checkGroupAccounts(accounts, checked) {
-  //     this.setState(state => {
-  //       const currentState = { ...state };
-  //       for (let i = 0; i < accounts.length; i++) {
-  //         currentState.checkedAccounts[accounts[i]] = checked;
-  //       }
-  //       console.log(currentState);
-  //       return currentState;
-  //     });
-  //   }
-
+  handleSelectAll(event) {
+    this.props.handleSelectAll(event.target.checked);
+  }
+  
   handleCheck(event) {
     const { id, checked } = event.target;
     this.props.handleAccountCheck(id, checked);
@@ -48,36 +31,73 @@ export default class AccountList extends Component {
   extractList() {
     const accountList = [];
     console.log(this.props.checkedAccounts);
-    // Object.entries(this.props.list).forEach(([key, value]) => {
-    //});
+    console.log('searched Accounts List in extractList method: ', this.props.searchedAccountsList);
+    if(this.props.searchedAccountsList) {
+      for(let i = 0; i < this.props.searchedAccountsList.length; i++) {
+        accountList.push(
+          <li key={i}>
+            <input 
+              type="checkbox"
+              id={this.props.searchedAccountsList[i]}
+              checked={this.props.checkedAccounts[this.props.searchedAccountsList[i]]}
+              defaultChecked={this.props.checkedAccounts[this.props.searchedAccountsList[i]]} //{this.state.checkedAccounts[i]} {this.props.checkedAccounts[this.props.list[i]]} //{this.state.list[i]}
+              onChange={this.handleCheck}
+              disabled = {(this.props.checkedAccounts[this.props.searchedAccountsList[i]] === false && this.props.getAccountDetails(this.props.searchedAccountsList[i], 'type') === 'twitter' && this.props.isTwitterChecked === true )}
+              />
+              {this.props.getAccountDetails(this.props.searchedAccountsList[i], "username")}
+          </li>
+        )
+      }
+    }
+    else {
+      
     for (let i = 0; i < this.props.list.length; i += 1) {
+      console.log(this.props.checkedAccounts[this.props.list[i]]);
+      console.log(this.props.getAccountDetails(this.props.list[i], 'type'));
+      console.log(this.props.isTwitterChecked);
+      console.log('disable condition: ', (this.props.checkedAccounts[this.props.list[i]] === false && this.props.getAccountDetails(this.props.list[i], 'type') === 'twitter' && this.props.isTwitterChecked === true ));
       accountList.push(
         <li key={i}>
           <input
             type="checkbox"
             id={this.props.list[i]}
-            // id={this.props.list[i].id}
-            // checked={
-            //   this.props.checkedAccountsList.indexOf(this.props.list[i].id) !==
-            //   -1
-            // }
-            // defaultChecked={
-            //   this.props.checkedAccountsList.indexOf(this.props.list[i].id) !==
-            //   -1
-            // }
             checked={this.props.checkedAccounts[this.props.list[i]]}
             defaultChecked={this.props.checkedAccounts[this.props.list[i]]} //{this.state.checkedAccounts[i]} {this.props.checkedAccounts[this.props.list[i]]} //{this.state.list[i]}
             onChange={this.handleCheck}
+            disabled = {(this.props.checkedAccounts[this.props.list[i]] === false && this.props.getAccountDetails(this.props.list[i], 'type') === 'twitter' && this.props.isTwitterChecked === true )}
           />
           {this.props.getAccountDetails(this.props.list[i], "username")}
         </li>
       );
     }
+  }
     return accountList;
   }
 
+  geCheckedAccountsLength() {
+    let count = 0;
+    console.log(this.props.checkedAccounts);
+    Object.values(this.props.checkedAccounts).forEach((value) => {
+      if(value === true) {
+        count += 1;
+      }
+    });
+    return count;
+  }
+
+  
+
   render() {
     const accountList = this.extractList();
-    return <ul className="accountlist">{accountList}</ul>;
+  return (
+      <div className="accounts-box">
+        <div className="account-header">
+          <input className="labelText" type="checkbox" id="selectAll" value="Select All" onChange={this.handleSelectAll} /> Select All
+          <div className="labelCount">{this.geCheckedAccountsLength()}</div>
+        </div>
+        <input type="text" placeholder="search" id="search" value={this.state.search} onChange={this.handleSearch} />
+        <ul className="accountlist">{accountList}</ul>
+      </div>
+    );
   }
 }

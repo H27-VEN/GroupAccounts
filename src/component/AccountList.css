@@ -1,7 +1,16 @@
-.accountlist {
+.accounts-box {
   margin: 5px;
   width: 300px;
   border: 1px solid black;
+}
+
+.labelCount {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  color: white;
+  text-align: center;
+  background-color: blue;
 }
 
 .accountlist li {
