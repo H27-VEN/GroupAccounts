@@ -36,7 +36,7 @@ export default class ListContainer extends Component {
         id: 3001,
         username: "Creative Glance",
         type: "twitter",
-        checkRank: 999
+        checkRank: 999  
       },
       4001: { id: 4001, username: "David John", type: "twitter", checkRank: 999 },
       5001: {
@@ -92,7 +92,7 @@ export default class ListContainer extends Component {
 
   sortAccountsList() {
     const accountsList = Object.values(this.accountInfoMap);
-    sort(accountsList).asc(['checkRank', 'username']);
+    sort(accountsList).asc(['checkRank', account => account.username.toLowerCase()]);
     this.accountList = accountsList;
   }
 
@@ -191,7 +191,7 @@ export default class ListContainer extends Component {
         }
         const accountsList = Object.values(this.accountInfoMap);
         console.log('accountsList: ',accountsList);
-        sort(accountsList).asc(['checkRank', 'username']);
+        sort(accountsList).asc(['checkRank', account => account.username.toLowerCase()]);
         console.log('accountsList after sort: ',accountsList);
        
          currentState.accountsList = [];
@@ -211,7 +211,7 @@ export default class ListContainer extends Component {
 
        const accountsList = Object.values(this.accountInfoMap);
         console.log('accountsList: ',accountsList);
-        sort(accountsList).asc(['checkRank', 'username']);
+        sort(accountsList).asc(['checkRank', account => account.username.toLowerCase()]);
         console.log('accountsList after sort: ',accountsList);
        
          currentState.accountsList = [];
